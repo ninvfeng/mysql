@@ -1,0 +1,21 @@
+{
+    "name": "ninvfeng/mysql",
+    "description": "一个简单PDO mysql数据库操作类",
+    "license":"MIT",
+    "version":"1.0",
+    "keywords" : [ "php", "mysql" ],
+    "authors": [
+        {
+            "name": "ninvfeng",
+            "email": "ninvfeng@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ninvfeng\\mysql\\": "src/"
+        }
+    }
+}
