@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ninvfeng\\mysql\\": "src/"
+            "ninvfeng\\": "src/"
         }
     }
 }
