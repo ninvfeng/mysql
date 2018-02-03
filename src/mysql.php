@@ -1,5 +1,5 @@
 <?php
-namespace ninvfeng\mysql;
+namespace ninvfeng;
 //基础数据库操作
 class mysql
 {
