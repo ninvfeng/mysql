@@ -8,6 +8,7 @@ class mysql
     protected $_where='';
     protected $_order='';
     protected $_limit='';
+    protected $_join='';
     protected $_debug=false;
 
     function __construct($table,$config)
@@ -69,7 +70,7 @@ class mysql
 
     //join
     public function join($join){
-        $this->_limit=$join;
+        $this->_join=$join;
         return $this;
     }
 
@@ -90,7 +91,7 @@ class mysql
     }
 
     //更新
-    public function save($data){
+    public function update($data){
         if($this->_where){
             $update='';
             foreach($data as $k => $v){
@@ -107,7 +108,7 @@ class mysql
     }
 
     //添加
-    public function add($data){
+    public function insert($data){
         $update='';
         foreach($data as $k => $v){
             $update.=$k.'="'.$v.'",';
