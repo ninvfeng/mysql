@@ -11,7 +11,7 @@ class mysql
     protected $_join='';
     protected $_debug=false;
 
-    function __construct($table,$config)
+    function __construct($config)
     {
         //链接数据库
         $this->_pdo=new \PDO('mysql:host='.$config['host'].';dbname='.$config['name'],$config['user'],$config['pass'],array(\PDO::ATTR_PERSISTENT => true));
@@ -26,6 +26,12 @@ class mysql
     //返回pdo对象
     public function pdo(){
         return $this->_pdo;
+    }
+
+    //操作表
+    public function table($table){
+        $this->_table=$table;
+        return $this;
     }
 
     //字段
@@ -154,7 +160,7 @@ class mysql
     }
 
     //事务
-    public function transaction($callback,$arr=[])
+    public function trans($callback,$arr=[])
     {
         $this->_pdo->beginTransaction();
         try {
