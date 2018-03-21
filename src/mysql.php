@@ -117,7 +117,7 @@ class mysql
     public function insert($data){
         $update='';
         foreach($data as $k => $v){
-            $update.=$k.'="'.$v.'",';
+            $update.='`'.$k.'`="'.$v.'",';
         }
         $update=trim($update,',');
         $sql="insert into {$this->_table} set $update;";
