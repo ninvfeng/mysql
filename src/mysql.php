@@ -101,7 +101,7 @@ class mysql
         if($this->_where){
             $update='';
             foreach($data as $k => $v){
-                $update.='`'.$k.'`="'.$v.'",';
+                $update.="`".$k."`='".$v."',";
             }
             $update=trim($update,',');
             $sql="update {$this->_table} set $update {$this->_where};";
@@ -117,7 +117,7 @@ class mysql
     public function insert($data){
         $update='';
         foreach($data as $k => $v){
-            $update.='`'.$k.'`="'.$v.'",';
+            $update.="`".$k."`='".$v."',";
         }
         $update=trim($update,',');
         $sql="insert into {$this->_table} set $update;";
