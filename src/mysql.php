@@ -57,7 +57,12 @@ class mysql
         if(is_array($where)){
             $res='';
             foreach($where as $k => $v){
-                $res.='`'.$k.'`="'.$v.'" and';
+                $column_key='';
+                foreach (explode('.',$k) as $kk => $vv) {
+                    $column_key.='`'.$vv.'`.';
+                }
+                $column_key=trim($column_key,'.');
+                $res.=$column_key.'="'.$v.'" and';
             }
             $where=trim($res,'and');
         }
@@ -76,6 +81,11 @@ class mysql
 
     //join
     public function join($join){
+
+        //语句中不包含join时自动添加left join
+        if(stripos($join,'join')===false){
+            $join='left join '.$join;
+        }
         $this->_join=$join;
         return $this;
     }
@@ -101,7 +111,12 @@ class mysql
         if($this->_where){
             $update='';
             foreach($data as $k => $v){
-                $update.="`".$k."`='".$v."',";
+                $column_key='';
+                foreach (explode('.',$k) as $kk => $vv) {
+                    $column_key.='`'.$vv.'`.';
+                }
+                $column_key=trim($column_key,'.');
+                $update.=column_key."='".$v."',";
             }
             $update=trim($update,',');
             $sql="update {$this->_table} set $update {$this->_where};";
@@ -117,7 +132,12 @@ class mysql
     public function insert($data){
         $update='';
         foreach($data as $k => $v){
-            $update.="`".$k."`='".$v."',";
+            $column_key='';
+            foreach (explode('.',$k) as $kk => $vv) {
+                $column_key.='`'.$vv.'`.';
+            }
+            $column_key=trim($column_key,'.');
+            $update.=column_key."='".$v."',";
         }
         $update=trim($update,',');
         $sql="insert into {$this->_table} set $update;";
