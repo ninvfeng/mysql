@@ -1,5 +1,5 @@
 <?php
-namespace ninvfeng\mysql;
+namespace ninvfeng;
 //基础数据库操作
 class mysql
 {
@@ -8,9 +8,10 @@ class mysql
     protected $_where='';
     protected $_order='';
     protected $_limit='';
+    protected $_join='';
     protected $_debug=false;
 
-    function __construct($table,$config)
+    function __construct($config)
     {
         //链接数据库
         $this->_pdo=new \PDO('mysql:host='.$config['host'].';dbname='.$config['name'],$config['user'],$config['pass'],array(\PDO::ATTR_PERSISTENT => true));
@@ -25,6 +26,12 @@ class mysql
     //返回pdo对象
     public function pdo(){
         return $this->_pdo;
+    }
+
+    //操作表
+    public function table($table){
+        $this->_table=$table;
+        return $this;
     }
 
     //字段
@@ -50,7 +57,12 @@ class mysql
         if(is_array($where)){
             $res='';
             foreach($where as $k => $v){
-                $res.='`'.$k.'`="'.$v.'" and';
+                $column_key='';
+                foreach (explode('.',$k) as $kk => $vv) {
+                    $column_key.='`'.$vv.'`.';
+                }
+                $column_key=trim($column_key,'.');
+                $res.=$column_key.'="'.$v.'" and';
             }
             $where=trim($res,'and');
         }
@@ -69,7 +81,12 @@ class mysql
 
     //join
     public function join($join){
-        $this->_limit=$join;
+
+        //语句中不包含join时自动添加left join
+        if(stripos($join,'join')===false){
+            $join='left join '.$join;
+        }
+        $this->_join=$join;
         return $this;
     }
 
@@ -90,11 +107,16 @@ class mysql
     }
 
     //更新
-    public function save($data){
+    public function update($data){
         if($this->_where){
             $update='';
             foreach($data as $k => $v){
-                $update.='`'.$k.'`="'.$v.'",';
+                $column_key='';
+                foreach (explode('.',$k) as $kk => $vv) {
+                    $column_key.='`'.$vv.'`.';
+                }
+                $column_key=trim($column_key,'.');
+                $update.=column_key."='".$v."',";
             }
             $update=trim($update,',');
             $sql="update {$this->_table} set $update {$this->_where};";
@@ -107,10 +129,15 @@ class mysql
     }
 
     //添加
-    public function add($data){
+    public function insert($data){
         $update='';
         foreach($data as $k => $v){
-            $update.=$k.'="'.$v.'",';
+            $column_key='';
+            foreach (explode('.',$k) as $kk => $vv) {
+                $column_key.='`'.$vv.'`.';
+            }
+            $column_key=trim($column_key,'.');
+            $update.=column_key."='".$v."',";
         }
         $update=trim($update,',');
         $sql="insert into {$this->_table} set $update;";
@@ -153,7 +180,7 @@ class mysql
     }
 
     //事务
-    public function transaction($callback,$arr=[])
+    public function trans($callback,$arr=[])
     {
         $this->_pdo->beginTransaction();
         try {
