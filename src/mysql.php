@@ -63,15 +63,16 @@ class mysql
     //条件
     public function where($where){
         if(is_array($where)){
-            $this->_param=$where;
             $res='';
             foreach($where as $k => $v){
                 $column_key='';
                 foreach (explode('.',$k) as $kk => $vv) {
                     $column_key.='`'.$vv.'`.';
+                    $column_plac='where_'.$vv;
                 }
+                $this->_param[$column_plac]=$v;
                 $column_key=trim($column_key,'.');
-                $res.=$column_key.'=:'.$k.' and';
+                $res.=$column_key.'=:'.$column_plac.' and';
             }
             $where=trim($res,'and');
         }
@@ -126,15 +127,16 @@ class mysql
     //更新
     public function update($data){
         if($this->_where){
-            $this->_param=array_merge($this->_param,$data);
             $update='';
             foreach($data as $k => $v){
                 $column_key='';
                 foreach (explode('.',$k) as $kk => $vv) {
                     $column_key.='`'.$vv.'`.';
+                    $column_plac=$vv;
                 }
+                $this->_param[$column_plac]=$v;
                 $column_key=trim($column_key,'.');
-                $update.=$column_key."=:".$k.",";
+                $update.=$column_key."=:".$column_plac.",";
             }
             $update=trim($update,',');
             $sql="update {$this->_table} set $update {$this->_where};";
@@ -147,15 +149,16 @@ class mysql
 
     //添加
     public function insert($data){
-        $this->_param=array_merge($this->_param,$data);
         $update='';
         foreach($data as $k => $v){
             $column_key='';
             foreach (explode('.',$k) as $kk => $vv) {
                 $column_key.='`'.$vv.'`.';
+                $column_plac=$vv;
             }
+            $this->_param[$column_plac]=$v;
             $column_key=trim($column_key,'.');
-            $update.=$column_key."=:".$k.",";
+            $update.=$column_key."=:".$column_plac.",";
         }
         $update=trim($update,',');
         $sql="insert into {$this->_table} set $update;";
