@@ -188,6 +188,7 @@ class mysql
 
     //执行原生query
     public function query($sql,$param=[]){
+        $this->clearParam();
         if($this->_debug){
             echo "<pre>";
             echo $this->debugSql();
@@ -206,6 +207,7 @@ class mysql
 
     //执行原生exec
     public function exec($sql,$param=[]){
+        $this->clearParam();
         if($this->_debug){
             echo "<pre>";
             echo $this->debugSql();
