@@ -278,7 +278,9 @@ class mysql
     
     //预处理where条件
     protected function preWhere(){
-        $this->_where='where'.trim($this->_where,'and');
+        if($this->_where){
+           $this->_where='where'.trim($this->_where,'and'); 
+        }
         return $this;
     }
 
