@@ -66,17 +66,24 @@ class mysql
             foreach($where as $k => $v){
                 $column_key='';
                 foreach (explode('.',$k) as $kk => $vv) {
-                    $column_key.='`'.$vv.'`.';
+                    $column_key.=' `'.$vv.'`.';
                     $column_plac='where_'.$vv;
                 }
-                $this->_param[$column_plac]=$v;
+                if(is_array($v)){
+                    $op = ' '.$v[0].' ';
+                    $this->_param[$column_plac]=$v[1];
+                }else{
+                    $op = ' = ';
+                    $this->_param[$column_plac]=$v;
+                }
                 $column_key=trim($column_key,'.');
-                
-                $res.=$column_key.'=:'.$column_plac.' and';
+                $res.=$column_key.$op.':'.$column_plac.' and';
             }
             $where=trim($res,'and');
+    
         }
         $this->_where.=' '.$where.' and';
+    
         return $this;
     }
 
@@ -278,8 +285,10 @@ class mysql
     
     //预处理where条件
     protected function preWhere(){
-        $this->_where='where'.trim($this->_where,'and');
-        return $this;
+        if($this->_where){
+            $this->_where='where'.trim($this->_where,'and'); 
+         }
+         return $this;
     }
 
     //查询
