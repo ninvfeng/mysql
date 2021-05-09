@@ -1,5 +1,5 @@
 {
-    "name": "ninvfeng/mysql",
+    "name": "yunmai/mysql",
     "description": "一个简单PDO mysql数据库操作类",
     "license":"MIT",
     "version":"1.0",
